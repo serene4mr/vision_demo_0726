@@ -1,0 +1,51 @@
+/**:
+  ros__parameters:
+
+    inference:
+      backend: "tensorrt" # tensorrt or onnxruntime
+      device: "cuda" # cuda or cpu
+      model_path: "/etc/demo_ext_assets/mts-yn-sem-512-fp16.engine"
+      warmup_runs: 3
+      # preprocessing: RGB, letterbox, /255 (no ImageNet mean/std)
+      norm_mean: [0.0, 0.0, 0.0]
+      norm_std: [1.0, 1.0, 1.0]
+      to_rgb: true
+      input_scale_mode: "0_1" # 0_255 or 0_1
+      keep_ratio: true
+      # Engine outputs: out_ids (1,H,W) uint8 + out_logits (1,5,H,W) float32
+      model:
+        in_width: 512   # model input width (preprocess/inference tensor size)
+        in_height: 512  # model input height (preprocess/inference tensor size)
+        out_argmax: true
+        out_logits: true
+        out_mask_binding: "out_ids"
+        out_logits_binding: "out_logits"
+      out_width: 0   # 0 keeps original output resolution (after letterbox inverse)
+      out_height: 0  # set both width/height to force mask/confidence size
+
+    topic:
+      input_image: "/camera/camera/color/image_raw" #"/camera/image"
+      input_cloud: "" #"/camera/camera/depth/color/points" # optional; non-empty enables sync with PointCloud2 + semantic cloud topic
+      output_mask: "/segmentation/mask"
+      output_confidence: "/segmentation/confidence"
+      output_label_info: "/segmentation/label_info"
+      output_overlay: "/segmentation/overlay"
+      output_semantic_cloud: "/segmentation/points" # sync path: same PointCloud2 as input, after mask publish
+    sync:
+      slop: 0.05
+      queue_size: 10
+
+    debug:
+      overlay:
+        publish: true
+        fps: true # draw FPS text on overlay (requires debug.profile.enabled)
+        mask_opacity: 0.3
+      profile:
+        enabled: true
+        window_size: 100
+        log_interval_sec: 1.0
+        warmup_skip_frames: 10
+
+    model_ontology_path: "/etc/demo_ext_assets/cfg/model_ontology.yaml"
+
+    verbose: false

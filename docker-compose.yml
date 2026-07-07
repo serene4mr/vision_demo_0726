@@ -1,0 +1,59 @@
+services:
+  foxglove_bridge:
+    image: local/vision_demo:latest
+    container_name: foxglove_bridge
+    environment:
+      - ROS_DISTRO=${ROS_DISTRO:-humble}
+      - ROS_DOMAIN_ID=0
+      - ROS_LOCALHOST_ONLY=0 # ensure DDS not restricted to loopback
+      # - RMW_IMPLEMENTATION=rmw_fastrtps_cpp  # uncomment if you want to force
+    volumes:
+      - ${MB_DATA_PATH:-/etc/mowbot_data}:/etc/mowbot_data
+      - /dev:/dev
+    network_mode: host
+    ipc: host # share host SHM for Fast DDS/Cyclone DDS
+    pid: host # optional but recommended with SHM
+    privileged: true
+    command:
+      - bash
+      - -lc
+      - |
+        # Escape $ so Compose doesn't interpolate at parse-time; container bash expands it.
+        source /opt/ros/$$ROS_DISTRO/setup.bash && \
+        source /opt/mowbot/setup.bash && \
+        # debug: show ROS env
+        env | grep -E 'ROS_|RMW' || true
+        ros2 launch foxglove_bridge foxglove_bridge_launch.xml
+
+  mowbot_semseg:
+    image: local/vision_demo:latest
+    container_name: semseg
+    runtime: nvidia
+    environment:
+      - ROS_DISTRO=${ROS_DISTRO:-humble}
+      - ROS_DOMAIN_ID=0
+      - ROS_LOCALHOST_ONLY=0 # ensure DDS not restricted to loopback
+      # - RMW_IMPLEMENTATION=rmw_fastrtps_cpp  # uncomment if you want to force
+    volumes:
+      - ${MB_DATA_PATH:-/etc/mowbot_data}:/etc/mowbot_data
+      - ./demo_ext_assets:/etc/demo_ext_assets
+      - /dev:/dev
+    network_mode: host
+    ipc: host # share host SHM for Fast DDS/Cyclone DDS
+    pid: host # optional but recommended with SHM
+    privileged: true
+    command:
+      - bash
+      - -lc
+      - |
+        # Escape $ so Compose doesn't interpolate at parse-time; container bash expands it.
+        source /opt/ros/$$ROS_DISTRO/setup.bash && \
+        source /opt/mowbot/setup.bash && \
+        # debug: show ROS env
+        env | grep -E 'ROS_|RMW' || true
+        ros2 run mowbot_semantic_segmentation semantic_segmentation_node --ros-args   --params-file /etc/demo_ext_assets/cfg/semantic_segmentation_node.yaml
+
+
+
+
+

@@ -1,0 +1,11 @@
+classes:
+  - name: background
+    color: [0, 0, 0] # BGR format: Black
+  - name: cuttable
+    color: [0, 255, 0] # BGR format: Green
+  - name: foliage
+    color: [255, 0, 0] # BGR format: Blue
+  - name: non-traversable
+    color: [0, 0, 255] # BGR format: Red
+  - name: traversable
+    color: [0, 255, 255] # BGR format: Yellow
