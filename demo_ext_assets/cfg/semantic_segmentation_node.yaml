@@ -14,8 +14,8 @@
       keep_ratio: true
       # Engine outputs: out_ids (1,H,W) uint8 + out_logits (1,5,H,W) float32
       model:
-        in_width: 512   # model input width (preprocess/inference tensor size)
-        in_height: 512  # model input height (preprocess/inference tensor size)
+        in_width: 640   # model input width (preprocess/inference tensor size)
+        in_height: 480  # model input height (preprocess/inference tensor size)
         out_argmax: true
         out_logits: true
         out_mask_binding: "out_ids"
