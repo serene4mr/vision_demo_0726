@@ -78,7 +78,7 @@ costmap:
           class_types: ["traversable", "danger"]
 
           traversable:
-            classes: ["traversable", "cuttable", "foliage"]
+            classes: ["traversable", "cuttable"]
             base_cost: 0
             max_cost: 0
             mark_confidence: 0
