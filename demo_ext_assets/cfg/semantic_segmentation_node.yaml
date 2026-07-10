@@ -4,7 +4,7 @@
     inference:
       backend: "tensorrt" # tensorrt or onnxruntime
       device: "cuda" # cuda or cpu
-      model_path: "/etc/demo_ext_assets/mts-yn-sem-512-fp16.engine"
+      model_path: "/etc/demo_ext_assets/mts-yn-sem-640x480-fp16.engine"
       warmup_runs: 3
       # preprocessing: RGB, letterbox, /255 (no ImageNet mean/std)
       norm_mean: [0.0, 0.0, 0.0]
