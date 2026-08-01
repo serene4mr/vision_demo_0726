@@ -4,7 +4,7 @@
     inference:
       backend: "tensorrt" # tensorrt or onnxruntime
       device: "cuda" # cuda or cpu
-      model_path: "/workspaces/mowbot/model_artifact/mts-yn-sem-640x480-clahe-fp16.engine"
+      model_path: "/etc/demo_ext_assets/model_artifact/mts-yn-sem-640x480-clahe-fp16.engine"
       warmup_runs: 3
       # Engine outputs: out_ids (1,H,W) uint8 + out_logits (1,5,H,W) float32
       model:
@@ -59,6 +59,6 @@
         log_interval_sec: 1.0
         warmup_skip_frames: 10
 
-    model_ontology_path: "/workspaces/mowbot/src/core/mowbot_sdk/perception/mowbot_semantic_segmentation/config/model_ontology_yolosem.yaml"
+    model_ontology_path: "/etc/demo_ext_assets/cfg/model_ontology.yaml"
 
     verbose: false
