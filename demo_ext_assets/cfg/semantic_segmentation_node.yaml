@@ -4,14 +4,8 @@
     inference:
       backend: "tensorrt" # tensorrt or onnxruntime
       device: "cuda" # cuda or cpu
-      model_path: "/etc/demo_ext_assets/tmp/mts-yn-sem-640x480-fp16_old.engine"
+      model_path: "/workspaces/mowbot/model_artifact/mts-yn-sem-640x480-clahe-fp16.engine"
       warmup_runs: 3
-      # preprocessing: RGB, letterbox, /255 (no ImageNet mean/std)
-      norm_mean: [0.0, 0.0, 0.0]
-      norm_std: [1.0, 1.0, 1.0]
-      to_rgb: true
-      input_scale_mode: "0_1" # 0_255 or 0_1
-      keep_ratio: true
       # Engine outputs: out_ids (1,H,W) uint8 + out_logits (1,5,H,W) float32
       model:
         in_width: 640   # model input width (preprocess/inference tensor size)
@@ -22,6 +16,25 @@
         out_logits_binding: "out_logits"
       out_width: 0   # 0 keeps original output resolution (after letterbox inverse)
       out_height: 0  # set both width/height to force mask/confidence size
+
+    preprocess:
+      # YOLO26-sem preprocessing: RGB, letterbox, /255 (no ImageNet mean/std)
+      norm_mean: [0.0, 0.0, 0.0]
+      norm_std: [1.0, 1.0, 1.0]
+      to_rgb: true
+      input_scale_mode: "0_1" # 0_255 or 0_1
+      keep_ratio: true
+      adaptive_equalization:
+        enabled: true
+        backend: "cv2" # skimage | cv2 — matches offline CLAHE dataset prep
+        color_order: "bgr" # set rgb if offline script read PIL/RGB images
+        skimage:
+          clip_limit: 0.03
+          kernel_size: 0 # 0 = auto (image dimension / 8)
+        cv2:
+          clip_limit: 4.0
+          tile_grid_size: [8, 8]
+      # when enabled, point inference.model_path to *-clahe* engine
 
     topic:
       input_image: "/camera/camera/color/image_raw" #"/camera/image"
@@ -46,6 +59,6 @@
         log_interval_sec: 1.0
         warmup_skip_frames: 10
 
-    model_ontology_path: "/etc/demo_ext_assets/cfg/model_ontology.yaml"
+    model_ontology_path: "/workspaces/mowbot/src/core/mowbot_sdk/perception/mowbot_semantic_segmentation/config/model_ontology_yolosem.yaml"
 
     verbose: false
